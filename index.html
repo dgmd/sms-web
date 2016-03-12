@@ -5,84 +5,141 @@
     <meta charset="utf-8">
     <style>
     .message > div {
-    	text-align: center;
-    	width: calc(100%/3 - 2em);
-    	padding: 1em;
-    	display: inline-block;
+        /* Styling our cells */
+        text-align: center;
+        width: calc(100%/3 - 2em);
+        padding: 1em;
+        display: inline-block;
     }
-    .message:nth-child(2n) {
-    	background-color: lightblue;
+    /* We use the nth-child pseudoclass to style even and odd rows differently; you can read more at https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-child */
+    
+    .message:nth-child(even) {
+        /* Color even rows */
+        background-color: lightblue;
     }
-    .message:nth-child(2n+1) {
-    	background-color: lightgreen;
+    
+    .message:nth-child(odd) {
+        /* Color odd rows */
+        background-color: lightgreen;
     }
     </style>
 </head>
 
 <body>
+    <h1>If you're interested, text (617) 870–0392</h1>
     <div id='messageDisplay'>
     </div>
+    <!-- Load the Firebase library, see https://www.firebase.com/docs/web/quickstart.html for more -->
     <script src="https://cdn.firebase.com/js/client/2.4.1/firebase.js"></script>
     <script>
-    var messageDisplay = document.getElementById('messageDisplay');
+    // An object for the Messages we receive— we need a unique id, a number, a name, and the message
 
+    var prettyifyName = function(rawName) {
+        var prettyName = rawName.split(' '); // Get the first and last name as an array
+        prettyName = prettyName.map(function(name) { // Replace each element of the array with a properly capitalized word
+            name = name.toLowerCase(); // First convert it to lowercase 
+            name.charAt(0).toUpperCase(); // Then uppercase the first letter; see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charAt for more
+            return name;
+        });
+        return prettyName..reverse().join(' '); // Then flip our array (since we get the information as last/first) and rejoin the array to make a string
+    };
+
+    var prettyifyNumber = function(number) {
+        // Make our number look pretty by formatting it with an area code and en-dash
+        var prettyNum = fromNum.replace(/^\+1/, ''); // Delete the `+1` at the beginning; see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace for more
+
+        prettyNum = Array.prototype.slice.call(fromNum); // Convert prettyNum to an Array so we can use `splice` (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice) to insert characters
+        [
+            [0, '('], // Insert a `(` at the 0th element…
+            [4, ') '],
+            [8, '-']
+        ].forEach(function(splicePair) { // For each of those pairs
+            prettyNum.splice(splicePair[0], 0, splicePair[1]); // Insert the second element of the pair at the index indicated by the first element
+        });
+        return prettyNum.join(''); // Rejoin our array to make it a string
+    };
+
+    // A small helper function which we can give some text and a dictionary of attributes and get back a div with those attributes (for making our cells)
     var divWrap = function(innerText, attrs) {
-    	var div = document.createElement('div');
-    	div.innerText = innerText;
-    	Object.keys(attrs).forEach(function(attr) {
-    		div.setAttribute(attr, attrs[attr]);
-    	});
-    	return div;
+        // Make a div
+        var div = document.createElement('div');
+
+        // Set its innerText
+        div.innerText = innerText;
+
+        // For each attribute
+        Object.keys(attrs).forEach(function(attr) {
+            div.setAttribute(attr, attrs[attr]); // Set the div's attribute
+        });
+        return div;
     };
 
     var Message = function(messageSid, fromNum, fromName, body) {
-    	var self = this;
+        var self = this;
+
+        // Store the messageSid twilio gives us
         self.messageSid = messageSid;
-        var prettyNum = Array.prototype.slice.call(fromNum.replace(/^\+1/, ''));
-        [
-        	[0, '('],
-        	[4, ') '],
-        	[8, '-']
-        ].forEach(function(splicePair) {
-        	prettyNum.splice(splicePair[0], 0, splicePair[1]);
-        });
-        self.fromNum = prettyNum.join('');
-        self.fromName = fromName.split(' ').reverse().join(' ');
+
+        // And our number, prettyified
+        self.fromNum = prettyifyNumber(fromNum);
+
+        // And our name, prettyified
+        self.fromName = prettyifyName(fromName);
+
+        // And whatever message they send us
         self.body = body;
-        self.rowDiv = divWrap('', {class: 'message'});
 
-        [
-	        [self.fromName, 'name'],
-        	[self.fromNum, 'number'],
-        	[self.body, 'body']
+        // Make an empty `div` with the class of `message` which will act as our row
+        self.rowDiv = divWrap('', {
+            class: 'message'
+        });
+
+        [ // For each of our cells, create a div with a particular class for formatting
+            [self.fromName, 'name'], // e.g. create a div with `self.fromName` as its content, with the class `name`
+            [self.fromNum, 'number'],
+            [self.body, 'body']
         ].forEach(function(cellPair) {
-        	var content = cellPair[0];
-        	var attrList = {class: cellPair[1]};
-
-        	self.rowDiv.appendChild(divWrap(content, attrList));
+            var content = cellPair[0];
+            var attrList = {
+                class: cellPair[1]
+            };
+            // And append a div with the right attributes for each cell
+            self.rowDiv.appendChild(divWrap(content, attrList));
         });
     };
 
+    // Grab where we'll display our messages…
+    var messageDisplay = document.getElementById('messageDisplay');
+
+    // Initialize an empty array to store all our Message objects
     var messages = [];
 
+    // Connect to our Firebase app
     var fb = new Firebase("https://sms-web.firebaseio.com/");
-    fb.on('value', function(snapshot) {
-        var data = snapshot.val();
-        if (data) {
-            Object.keys(data).forEach(function(mid) {
-                var messageSids = messages.map(function(m) {
-                    return m.messageSid
-                });
+    fb.on('value', function(snapshot) { // Whenever there is data and/or the data changes
+        var data = snapshot.val(); // Grab the database as JSON
+        if (data) { // If we have any data
+            // Grab all the currently loaded messages's messageSid's so we can skip over rendering them
+            var messageSids = messages.map(function(m) {
+                return m.messageSid
+            });
+            Object.keys(data).forEach(function(mid) { // Go through each record (whose key is the messageSid twilio gives us)
+                // Check if the messageSid we're looking at is already in the Message objects in our message array
                 var isNewSid = messageSids.indexOf(mid == -1);
-                if (isNewSid) {
+                if (isNewSid) { // If the messageSid is new
+                    // Create a new Message object
                     var newMessage = new Message(mid, data[mid].from, data[mid].name, data[mid].body)
+
+                    // Add it to our array
                     messages.push(newMessage);
+
+                    // And then add its `div` to our `messageDisplay` `div`
                     messageDisplay.appendChild(newMessage.rowDiv);
                 }
             });
-        }
-        else {
-        	messageDisplay.innerHTML = 'Sorry, no data yet…';
+        } else {
+            // If we don't have any data, say so
+            messageDisplay.innerHTML = 'Sorry, no data yet…';
         }
     });
     </script>
