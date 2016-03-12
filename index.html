@@ -3,10 +3,53 @@
 
 <head>
     <meta charset="utf-8">
+    <!-- Load a couple fonts from Google Fonts (https://www.google.com/fonts) chosen via http://fontpair.co/ -->
+    <link href='https://fonts.googleapis.com/css?family=Lato|Merriweather' rel='stylesheet' type='text/css'>
     <style>
+    @media (min-device-width: 375px) and (max-device-width: 667px) {
+        /* When we're on an iPhone (see https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries for more on media queries, and http://stephen.io/mediaqueries/#iPhone for the calibration for iPhones) */
+        h1,
+        .message {
+            width: 100%;
+        }
+    }
+    
+    @media (min-device-width: 668px) {
+        /* Set our width to 100% when we're one a device bigger than 668px */
+        h1,
+        .message {
+            width: 50%;
+        }
+    }
+    
+    h1 {
+        font-family: 'Lato', sans-serif;
+    }
+    
+    .message {
+        font-family: 'Merriweather', serif;
+    }
+    
+    h1,
+    .message {
+        /* Style our message and header, device independent */
+        text-align: center;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
     .message > div {
         /* Styling our cells */
-        text-align: center;
+
+        color: #333;
+
+        /* Check out https://developer.mozilla.org/en-US/docs/Web/CSS/text-overflow; we use it to truncate messages that are too long and replace with an ellipsis */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis; 
+
+        /* Geometry */
+        max-height: 1em;
         width: calc(100%/3 - 2em);
         padding: 1em;
         display: inline-block;
@@ -15,12 +58,17 @@
     
     .message:nth-child(even) {
         /* Color even rows */
-        background-color: lightblue;
+        background-color: #FFF5E1;
+        opacity: 0.875;
     }
     
     .message:nth-child(odd) {
         /* Color odd rows */
-        background-color: lightgreen;
+        background-color: #F4D8E1;
+    }
+
+    html {
+        background-color: #9D95B7;
     }
     </style>
 </head>
