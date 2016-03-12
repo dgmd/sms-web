@@ -48,7 +48,7 @@ app.get('/', function(req, res) {
 	res.sendFile('./index.html', {root: '.'});
 });
 
-var port = 80
+var port = 3000
 app.listen(port, function() {
     console.log('sms-web listening on port', port);
 });
