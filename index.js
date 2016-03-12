@@ -103,11 +103,6 @@ app.get('/', function(req, res) {
     res.sendFile('./index.html', { root: '.' });
 });
 
-app.get('/prefixfree.min.js', function(req, res) {
-    // Serve up our `index.html` file relative to the current directory
-    res.sendFile('./prefixfree.min.js', { root: '.' });
-});
-
 // Actually turn on our Express server now that we've configured it
 app.listen(app.get('port'), function() {
     console.log('Node app is running on port', app.get('port'));
