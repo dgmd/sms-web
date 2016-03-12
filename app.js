@@ -1,5 +1,7 @@
 var express = require('express');
+var bodyParser = require('body-parser');
 var app = express();
+app.use(bodyParser.urlencoded({ extended: false } ));
 app.set('port', (process.env.PORT || 5000));
 
 var Firebase = require("firebase");
@@ -33,7 +35,6 @@ var twilio_err = function(error, message) {
 }
 
 app.post('/', function(req, res) {
-	console.log(req.body);
     var data = {};
     data[req.body.MessageSid] = {
         from: req.body.From,
