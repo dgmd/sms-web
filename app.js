@@ -33,7 +33,7 @@ var twilio_err = function(error, message) {
 }
 
 app.post('/', function(req, res) {
-	console.log(req);
+	console.log(req.params);
     var data = {};
     data[req.params.MessageSid] = {
         from: req.params.From,
@@ -49,6 +49,7 @@ app.post('/', function(req, res) {
 });
 
 app.get('/', function(req, res) {
+	console.log(req);
 	res.sendFile('./index.html', {root: '.'});
 });
 
