@@ -6,6 +6,7 @@ app.set('port', (process.env.PORT || 5000));
 
 var Firebase = require("firebase");
 var fb = new Firebase("https://sms-web.firebaseio.com/");
+fb.remove();
 
 var twilio_options = {
     account_sid: 'AC4c7e361ffe2675c8003322fbff77451f',
@@ -53,7 +54,6 @@ var respondTo = function(req, name) {
 app.post('/', function(req, res) {
     opencnam.lookup(req.body.From, opencnam_options, function(err, cnam) {
         if (!err) {
-        	console.log(cnam);
         	respondTo(req, cnam);
         } else {
             console.log("Oops, OpenCNAM error", err);
@@ -62,7 +62,6 @@ app.post('/', function(req, res) {
 });
 
 app.get('/', function(req, res) {
-    console.log(req);
     res.sendFile('./index.html', { root: '.' });
 });
 

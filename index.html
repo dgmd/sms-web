@@ -15,20 +15,33 @@
     <script>
     var messageDisplay = document.getElementById('messageDisplay');
 
-    var Message = function(messageSid, fromNum, body) {
-        this.messageSid = messageSid;
-        this.from = fromNum;
-        this.body = body;
-        this.rowDiv = document.createElement('div');
-        this.rowDiv.classList.add('message');
-        var numberCell = document.createElement('div');
-        numberCell.innerText = this.fromNum;
+    var divWrap = function(innerText, attrs) {
+    	var div = document.createElement('div');
+    	div.innerText = innerText;
+    	Object.keys(attrs).forEach(function(attr) {
+    		div.setAttribute(attr, attrs[attr]);
+    	});
+    	return div;
+    };
 
-        var messageCell = document.createElement('div');
-        messageCell.innerText = this.body;
+    var Message = function(messageSid, fromNum, fromName, body) {
+    	var self = this;
+        self.messageSid = messageSid;
+        self.fromNum = fromNum;
+        self.fromName = fromName;
+        self.body = body;
+        self.rowDiv = divWrap('', {class: 'message'});
 
-        this.rowDiv.appendChild(numberCell);
-        this.rowDiv.appendChild(messageCell);
+        [
+        	[self.fromNum, 'number'],
+        	[self.body, 'message'],
+        	[self.fromName, 'name']
+        ].forEach(function(cellPair) {
+        	var content = cellPair[0];
+        	var attrList = {class: cellPair[1]};
+
+        	self.rowDiv.appendChild(divWrap(content, attrList));
+        });
     };
 
     var messages = [];
