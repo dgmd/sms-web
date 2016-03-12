@@ -41,7 +41,7 @@
             name.charAt(0).toUpperCase(); // Then uppercase the first letter; see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charAt for more
             return name;
         });
-        return prettyName..reverse().join(' '); // Then flip our array (since we get the information as last/first) and rejoin the array to make a string
+        return prettyName.reverse().join(' '); // Then flip our array (since we get the information as last/first) and rejoin the array to make a string
     };
 
     var prettyifyNumber = function(number) {
