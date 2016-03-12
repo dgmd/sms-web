@@ -38,7 +38,7 @@
         var prettyName = rawName.split(' '); // Get the first and last name as an array
         prettyName = prettyName.map(function(name) { // Replace each element of the array with a properly capitalized word
             name = name.toLowerCase(); // First convert it to lowercase 
-            name.charAt(0).toUpperCase(); // Then uppercase the first letter; see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charAt for more
+            name = name[0].toUpperCase() + name.slice(1); // Then uppercase the first letter; see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/charAt for more
             return name;
         });
         return prettyName.reverse().join(' '); // Then flip our array (since we get the information as last/first) and rejoin the array to make a string
@@ -46,9 +46,9 @@
 
     var prettyifyNumber = function(number) {
         // Make our number look pretty by formatting it with an area code and en-dash
-        var prettyNum = fromNum.replace(/^\+1/, ''); // Delete the `+1` at the beginning; see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace for more
+        var prettyNum = number.replace(/^\+1/, ''); // Delete the `+1` at the beginning; see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace for more
 
-        prettyNum = Array.prototype.slice.call(fromNum); // Convert prettyNum to an Array so we can use `splice` (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice) to insert characters
+        prettyNum = Array.prototype.slice.call(prettyNum); // Convert prettyNum to an Array so we can use `splice` (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice) to insert characters
         [
             [0, '('], // Insert a `(` at the 0th element…
             [4, ') '],
