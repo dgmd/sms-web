@@ -34,7 +34,7 @@ var twilio_err = function(error, message) {
     }
 }
 
-var respondTo = function(request, name) {
+var respondTo = function(req, name) {
     var data = {};
     data[req.body.MessageSid] = {
         from: req.body.From,
