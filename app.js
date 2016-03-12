@@ -33,6 +33,7 @@ var twilio_err = function(error, message) {
 }
 
 app.post('/', function(req, res) {
+	console.log(req);
     var data = {};
     data[req.params.MessageSid] = {
         from: req.params.From,
