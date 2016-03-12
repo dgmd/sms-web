@@ -19,7 +19,6 @@ app.set('port', (process.env.PORT || 5000));
 // Load and configure Firebase (check out https://www.firebase.com/docs/web/quickstart.html for more)
 var Firebase = require("firebase");
 var fb = new Firebase("https://sms-web.firebaseio.com/");
-fb.remove(); // Remove all the data on our Firebase DB; this way each time we deploy to Heroku or locally we get a fresh DB
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -91,6 +90,12 @@ app.post('/', function(req, res) {
         }
     });
 });
+
+// Give us a hidden URL to go to which resets our Firebase data
+app.get('/reset', function(req, res) {
+    fb.remove(); // Remove all the data on our Firebase DB
+    res.send("Reset your Firebase database…");
+})
 
 // When we receive a GET request at `/` (_i.e._ when someone goes to our homepage)
 app.get('/', function(req, res) {
