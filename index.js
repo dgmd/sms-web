@@ -57,7 +57,7 @@ var opencnam_options = {
 
 var thank = function(number) {
     twilio_client.sms.messages.create({
-        to: req.body.From,
+        to: number,
         from: twilio_options.number,
         body: "Thanks for your interest!  We'll be in touch…"
     }, twilio_err);
