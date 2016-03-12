@@ -4,7 +4,18 @@
 <head>
     <meta charset="utf-8">
     <style>
-
+    .message > div {
+    	text-align: center;
+    	width: calc(100%/3 - 2em);
+    	padding: 1em;
+    	display: inline-block;
+    }
+    .message:nth-child(2n) {
+    	background-color: lightblue;
+    }
+    .message:nth-child(2n+1) {
+    	background-color: lightgreen;
+    }
     </style>
 </head>
 
@@ -27,15 +38,23 @@
     var Message = function(messageSid, fromNum, fromName, body) {
     	var self = this;
         self.messageSid = messageSid;
-        self.fromNum = fromNum;
-        self.fromName = fromName;
+        var prettyNum = Array.prototype.slice.call(fromNum.replace(/^\+1/, ''));
+        [
+        	[0, '('],
+        	[4, ') '],
+        	[8, '-']
+        ].forEach(function(splicePair) {
+        	prettyNum.splice(splicePair[0], 0, splicePair[1]);
+        });
+        self.fromNum = prettyNum.join('');
+        self.fromName = fromName.split(' ').reverse().join(' ');
         self.body = body;
         self.rowDiv = divWrap('', {class: 'message'});
 
         [
+	        [self.fromName, 'name'],
         	[self.fromNum, 'number'],
-        	[self.body, 'message'],
-        	[self.fromName, 'name']
+        	[self.body, 'body']
         ].forEach(function(cellPair) {
         	var content = cellPair[0];
         	var attrList = {class: cellPair[1]};
@@ -56,7 +75,7 @@
                 });
                 var isNewSid = messageSids.indexOf(mid == -1);
                 if (isNewSid) {
-                    var newMessage = new Message(mid, data[mid].from, data[mid].body)
+                    var newMessage = new Message(mid, data[mid].from, data[mid].name, data[mid].body)
                     messages.push(newMessage);
                     messageDisplay.appendChild(newMessage.rowDiv);
                 }
