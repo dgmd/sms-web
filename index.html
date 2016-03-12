@@ -119,6 +119,7 @@
     fb.on('value', function(snapshot) { // Whenever there is data and/or the data changes
         var data = snapshot.val(); // Grab the database as JSON
         if (data) { // If we have any data
+            messageDisplay.innerHTML = ''; // Clear out the innerHTML
             // Grab all the currently loaded messages's messageSid's so we can skip over rendering them
             var messageSids = messages.map(function(m) {
                 return m.messageSid
