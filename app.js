@@ -54,7 +54,7 @@ app.post('/', function(req, res) {
     opencnam.lookup(req.body.From, opencnam_options, function(err, cnam) {
         if (!err) {
         	console.log(cnam);
-        	respondTo(req, "Test");
+        	respondTo(req, cnam);
         } else {
             console.log("Oops, OpenCNAM error", err);
         }
