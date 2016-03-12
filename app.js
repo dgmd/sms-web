@@ -3,6 +3,7 @@ var app = express();
 app.set('port', (process.env.PORT || 5000));
 
 var Firebase = require("firebase");
+var fb = new Firebase("https://sms-web.firebaseio.com/");
 
 var twilio_options = {
     account_sid: 'AC4c7e361ffe2675c8003322fbff77451f',
