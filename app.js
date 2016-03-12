@@ -1,5 +1,7 @@
 var express = require('express');
 var app = express();
+app.set('port', (process.env.PORT || 5000));
+
 var Firebase = require("firebase");
 
 var twilio_options = {
@@ -48,9 +50,8 @@ app.get('/', function(req, res) {
 	res.sendFile('./index.html', {root: '.'});
 });
 
-var port = 3000
-app.listen(port, function() {
-    console.log('sms-web listening on port', port);
+app.listen(app.get('port'), function() {
+  console.log('Node app is running on port', app.get('port'));
 });
 
 // opencnam.lookup('2024561111', options, function (err, cnam) {
