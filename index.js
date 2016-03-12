@@ -65,13 +65,14 @@ var thank = function(number) {
 
 // Declare a function to run when we receive a POST request from Twilio
 var respondTo = function(req, name) { // Takes the request object and the name we compute with opencnam
-    var data = {}; // Create an empty dictionary to send to Firebase
-    data[req.body.MessageSid] = { // Point it at our unique MessageSid from Twilio
-        from: req.body.From, // Save who the message is from…
+    var data = { // Create a dictionary to send to Firebase
+        sid: req.body.MessageSid, // Save our unique messageSid from twilio…
+        from: req.body.From, // …who the message is from…
         body: req.body.Body, // …what they say…
         name: name // …and the name we're passed
     };
-    fb.set(data); // And then update the data on Firebase— see https://www.firebase.com/docs/web/guide/saving-data.html for more
+    var newMessageRef = fb.push(); // Grab a reference to a new, blank record in our Firebase DB
+    newMessageRef.set(data); // And then update the data on Firebase— see https://www.firebase.com/docs/web/guide/saving-data.html for more
 
     thank(req.body.From); // Send a thank-you SMS
 };
