@@ -22,6 +22,30 @@
         }
     }
     
+    #messageDisplay {
+        /* Styling for when we have a no data message… */
+        font-family: 'Merriweather', serif;
+        text-align: center;
+    }
+    
+    @keyframes pulse-fade {
+        0% {
+            opacity: 0.25;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+    
+    .nodata {
+        animation-name: pulse-fade;
+        animation-duration: 2s;
+        animation-timing-function: linear;
+        animation-direction: alternate;
+        animation-iteration-count: infinite;
+        font-size: 2em;
+    }
+    
     h1 {
         font-family: 'Lato', sans-serif;
     }
@@ -40,14 +64,11 @@
     
     .message > div {
         /* Styling our cells */
-
         color: #333;
-
         /* Check out https://developer.mozilla.org/en-US/docs/Web/CSS/text-overflow; we use it to truncate messages that are too long and replace with an ellipsis */
         white-space: nowrap;
         overflow: hidden;
-        text-overflow: ellipsis; 
-
+        text-overflow: ellipsis;
         /* Geometry */
         max-height: 1em;
         width: calc(100%/3 - 2em);
@@ -66,15 +87,19 @@
         /* Color odd rows */
         background-color: #F4D8E1;
     }
-
+    
     html {
         background-color: #9D95B7;
+    }
+
+    #sms {
+        color: #58488A;
     }
     </style>
 </head>
 
 <body>
-    <h1>If you're interested, text (617) 870–0392</h1>
+    <h1>If you're interested, text <span id='sms'>(617) 870–0392</span></h1>
     <div id='messageDisplay'>
     </div>
     <!-- Load the Firebase library, see https://www.firebase.com/docs/web/quickstart.html for more -->
@@ -188,7 +213,7 @@
             });
         } else {
             // If we don't have any data, say so
-            messageDisplay.innerHTML = 'Sorry, no data yet…';
+            messageDisplay.innerHTML = "<span class='nodata'>Sorry, no data yet…</span>";
         }
     });
     </script>
