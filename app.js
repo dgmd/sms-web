@@ -33,16 +33,16 @@ var twilio_err = function(error, message) {
 }
 
 app.post('/', function(req, res) {
-	console.log(req.params);
+	console.log(req.body);
     var data = {};
-    data[req.params.MessageSid] = {
-        from: req.params.From,
-        body: req.params.Body
+    data[req.body.MessageSid] = {
+        from: req.body.From,
+        body: req.body.Body
     };
     fb.set(data);
 
     client.sms.messages.create({
-        to: req.params.From,
+        to: req.body.From,
         from: twilio_options.number,
         body: "Thanks for your interest!  We'll be in touch…"
     }, twilio_err);
