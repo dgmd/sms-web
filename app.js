@@ -1,0 +1,62 @@
+var express = require('express');
+var app = express();
+var Firebase = require("firebase");
+
+var twilio_options = {
+    account_sid: 'AC4c7e361ffe2675c8003322fbff77451f',
+    auth_token: '5d5d41cfc613ac014d4e52a1edad0e57',
+    number: '+16178700392'
+};
+
+// var opencnam = require('opencnam');
+// var opencnam_options = {
+//   account_sid: 'ACe2f3627a22e54a97a0f53c8903614990',
+//   auth_token:  'AUf4db49f5f30c45f8846725de0fcd8ac5'
+// };
+
+var twilio = require('twilio');
+var client = twilio(twilio_options.account_sid, twilio_options.auth_token);
+
+var twilio_err = function(error, message) {
+    if (!error) {
+        console.log('Success! The SID for this SMS message is:');
+        console.log(message.sid);
+
+        console.log('Message sent on:');
+        console.log(message.dateCreated);
+    } else {
+        console.log('Oops! There was an error:', error);
+    }
+}
+
+app.post('/', function(req, res) {
+    var data = {};
+    data[req.params.MessageSid] = {
+        from: req.params.From,
+        body: req.params.Body
+    };
+    fb.set(data);
+
+    client.sms.messages.create({
+        to: req.params.From,
+        from: twilio_options.number,
+        body: "Thanks for your interest!  We'll be in touch…"
+    }, twilio_err);
+});
+
+app.get('/', function(req, res) {
+	res.sendFile('./index.html', {root: '.'});
+});
+
+var port = 3000
+app.listen(port, function() {
+    console.log('sms-web listening on port', port);
+});
+
+// opencnam.lookup('2024561111', options, function (err, cnam) {
+//   if (!err) {
+//     console.log(cnam);
+//   } else {
+//     console.log(err);
+//   }
+// });
